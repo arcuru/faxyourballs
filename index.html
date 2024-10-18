@@ -122,7 +122,7 @@
         <br>
         <button type="submit">Send Your Balls!</button>
     </form>
-    <div><a href="https://github.com/arcuru/faxyourballs">No Balls? Fax Me A Complaint!</a></div>
+    <div><a href="#" onclick="alert('Complaints are accepted at (867) 555-5309'); return false;">No Balls? Fax Me A Complaint!</a></div>
 
     <div id="spinner" class="spinner"></div>
     <div id="result-message" style="display: none;">
@@ -149,7 +149,10 @@
 
                 // Show result message based on fax number
                 var resultMessage = document.getElementById('result-message');
-                if (fax_number === '1234567890') {
+                if (fax_number === '8675555309') {
+                    resultMessage.innerHTML = '<h2>Error Sending, please file your complaints online <a href="https://github.com/arcuru/faxyourballs">here</a></h2>';
+                }
+                else if (fax_number === '1234567890') {
                     resultMessage.innerHTML = '<h2>Wow, nice balls!</h2>';
                 } else if (fax_number.substring(3, 6) === '555') {
                     // 555 is a fake number used in all the movies
