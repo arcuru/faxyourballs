@@ -94,6 +94,15 @@
                 transform: rotate(360deg);
             }
         }
+
+        .digit-selector {
+            margin: 10px 0;
+        }
+
+        .digit-selector label {
+            display: inline-block;
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -253,6 +262,18 @@
                     '<div id="fax-number-error" style="color: red;"></div>';
             },
             function () {
+                let html = '<label>Select each digit of your fax number:</label><br>';
+                for (let i = 0; i < 10; i++) {
+                    html += `<div class="digit-selector">
+            <span>Digit ${i + 1}:</span>
+            ${Array.from({ length: 10 }, (_, j) =>
+                        `<label><input type="radio" name="digit-${i}" value="${j}">${j}</label>`
+                    ).join('')}
+        </div>`;
+                }
+                return html + '<div id="radio-fax-number"></div>';
+            },
+            function () {
                 var options = Array.from({ length: 1000 }, (_, i) => i.toString().padStart(3, '0'));
                 var lastOptions = Array.from({ length: 10000 }, (_, i) => i.toString().padStart(4, '0'));
 
@@ -316,6 +337,17 @@
                     fax_number = this.value;
                 });
             }
+            if (document.querySelector('.digit-selector')) {
+                const radioGroups = document.querySelectorAll('.digit-selector');
+                radioGroups.forEach(group => {
+                    group.addEventListener('change', function () {
+                        const digits = Array.from({ length: 10 }, (_, i) =>
+                            document.querySelector(`input[name="digit-${i}"]:checked`)?.value || '_'
+                        );
+                        fax_number = digits.join('');
+                    });
+                });
+            }
             if (document.getElementById('area-code') && document.getElementById('second-part') && document.getElementById('third-part')) {
                 ['area-code', 'second-part', 'third-part'].forEach(function (id) {
                     document.getElementById(id).addEventListener('change', function () {
@@ -374,6 +406,22 @@
                     }
                 });
             }
+
+            if (document.querySelector('.digit-selector')) {
+                const radioGroups = document.querySelectorAll('.digit-selector');
+                radioGroups.forEach(group => {
+                    group.addEventListener('change', updateRadioFaxNumber);
+                });
+            }
+            function updateRadioFaxNumber() {
+                const digits = Array.from({ length: 10 }, (_, i) =>
+                    document.querySelector(`input[name="digit-${i}"]:checked`)?.value || '_'
+                );
+                fax_number = digits.join('');
+                document.getElementById('radio-fax-number').textContent =
+                    `Selected fax number: (${digits.slice(0, 3).join('')}) ${digits.slice(3, 6).join('')}-${digits.slice(6).join('')}`;
+            }
+
             if (document.getElementById('fax-number-slider')) {
                 const slider = document.getElementById('fax-number-slider');
                 const output = document.getElementById('fax-number-output');
