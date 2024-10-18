@@ -110,7 +110,7 @@
         <label for="ball-input">Enter a URL or upload an image of your balls:</label>
         <input type="text" id="ball-input" name="ball-input" placeholder="Enter URL">
         <input type="file" id="ball-upload" name="ball-upload" accept="image/*" style="display: none;">
-        <button type="button" onclick="document.getElementById('ball-upload').click()">Upload Balls</button><br><br>
+        <button type="button" id="upload-balls-button">Upload Balls</button><br><br>
 
 
         <div id="phone-input-container">
@@ -202,7 +202,7 @@
             }
         });
 
-        document.querySelector('button[onclick="document.getElementById(\'ball-upload\').click()"]').addEventListener('click', function () {
+        document.getElementById('upload-balls-button').addEventListener('click', function () {
             const urlInput = document.getElementById('ball-input');
             if (urlInput.value) {
                 addSpinningBall(urlInput.value);
