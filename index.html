@@ -150,18 +150,31 @@
 
                 // Show result message based on fax number
                 var resultMessage = document.getElementById('result-message');
-                if (fax_number === '8675555309') {
-                    resultMessage.innerHTML = '<h2>Error Sending, please file your complaints online <a href="https://github.com/arcuru/faxyourballs">here</a></h2>';
-                } else if (fax_number === '1234567890') {
-                    resultMessage.innerHTML = '<h2>Wow, nice balls!</h2>';
-                } else if (fax_number.substring(3, 6) === '555') {
-                    // 555 is a fake number used in all the movies
-                    resultMessage.innerHTML = '<h2>Your balls have been faxed to Hollywood!</h2>';
-                } else {
-                    resultMessage.innerHTML = '<h2>Your balls have been successfully faxed!</h2>';
+
+                // Calculate SHA256 hash of fax_number
+                async function sha256(message) {
+                    const msgBuffer = new TextEncoder().encode(message);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    return hashHex;
                 }
-                resultMessage.style.display = 'block';
-                document.getElementById('fax-form').reset();
+
+                sha256(fax_number).then(hash => {
+                    if (fax_number === '8675555309') {
+                        resultMessage.innerHTML = '<h2>Error Sending, please file your complaints online <a href="https://github.com/arcuru/faxyourballs">here</a></h2>';
+                    } else if (fax_number === '1234567890') {
+                        resultMessage.innerHTML = '<h2>Wow, nice balls!</h2>';
+                    } else if (fax_number.substring(3, 6) === '555') {
+                        resultMessage.innerHTML = '<h2>Your balls have been faxed to Hollywood!</h2>';
+                    } else if (hash === 'ec597bb1a95b807e0c9842e97b1dd137303a27f44baa08bdb83877d1129b5b34') {
+                        resultMessage.innerHTML = '<h2>You think you\'re so clever looking at the source code. Text me at this number for a prize!</h2>';
+                    } else {
+                        resultMessage.innerHTML = '<h2>Your balls have been successfully faxed!</h2>';
+                    }
+                    resultMessage.style.display = 'block';
+                    document.getElementById('fax-form').reset();
+                });
             }, 1500);
         });
         // Add blinking effect to the h1
@@ -406,5 +419,3 @@
     <br><br><br><br>
     &lt;/body&gt;
 </body>
-
-</html>
