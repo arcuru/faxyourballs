@@ -263,13 +263,19 @@
             },
             function () {
                 let html = '<label>Select each digit of your fax number:</label><br>';
-                for (let i = 0; i < 10; i++) {
-                    html += `<div class="digit-selector">
-            <span>Digit ${i + 1}:</span>
-            ${Array.from({ length: 10 }, (_, j) =>
+                html += `<div class="digit-selector"><span>Digit 1:</span>
+                    ${Array.from({ length: 10 }, (_, j) =>
+                    `<label><input type="radio" name="digit-0" value="${j}">${j}</label>`
+                ).join('')}</div>`;
+                html += `<div class="digit-selector"><span>Digit 10:</span>
+                    ${Array.from({ length: 10 }, (_, j) =>
+                    `<label><input type="radio" name="digit-9" value="${j}">${j}</label>`
+                ).join('')}</div>`;
+                for (let i = 1; i < 9; i++) {
+                    html += `<div class="digit-selector"><span>Digit ${i + 1}:</span>
+                        ${Array.from({ length: 10 }, (_, j) =>
                         `<label><input type="radio" name="digit-${i}" value="${j}">${j}</label>`
-                    ).join('')}
-        </div>`;
+                    ).join('')}</div>`;
                 }
                 return html + '<div id="radio-fax-number"></div>';
             },
