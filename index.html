@@ -290,6 +290,16 @@
                         <div id="digit-boxes" style="display: inline-block;">${boxes}</div><br>
                         <button id="start-btn" type="button">Start</button>
                         <button id="restart-btn" type="button">Restart</button>`;
+            },
+            function () {
+                return `
+        <label>Choose your fax number:</label><br>
+        <canvas id="gradient-canvas" width="300" height="50" style="cursor:crosshair;"></canvas><br>
+        <div>Area Code: <span id="area-code-color" style="display:inline-block;width:20px;height:20px;"></span></div>
+        <div>Second Part: <span id="second-part-color" style="display:inline-block;width:20px;height:20px;"></span></div>
+        <div>Third Part: <span id="third-part-color" style="display:inline-block;width:20px;height:20px;"></span></div>
+        <div id="gradient-fax-number"></div>
+    `;
             }
         ];
         document.getElementById('change-input-method').addEventListener('click', function (event) {
@@ -327,6 +337,15 @@
                     });
                 }
             }
+            if (document.getElementById('gradient-canvas')) {
+                document.getElementById('gradient-canvas').addEventListener('click', function () {
+                    const colorParts = ['area-code-color', 'second-part-color', 'third-part-color'];
+                    fax_number = colorParts.map(id => {
+                        const rgb = document.getElementById(id).style.backgroundColor.match(/\d+/g);
+                        return rgb ? rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('').slice(0, 3) : '000';
+                    }).join('');
+                });
+            }
         }
 
         function setupFaxNumberListeners() {
@@ -356,7 +375,18 @@
                 });
             }
             if (document.getElementById('fax-number-slider')) {
-                updateSliderOutput();
+                const slider = document.getElementById('fax-number-slider');
+                const output = document.getElementById('fax-number-output');
+
+                if (slider && output) {
+                    slider.addEventListener('input', function () {
+                        let value = this.value.padStart(10, '0');
+                        output.textContent = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+                    });
+
+                    // Initialize the output with the default slider value
+                    slider.dispatchEvent(new Event('input'));
+                }
             }
             if (document.getElementById('start-btn')) {
                 let currentBox = 0;
@@ -397,20 +427,42 @@
                 // Initial setup
                 restartSelection();
             }
-        }
 
-        function updateSliderOutput() {
-            const slider = document.getElementById('fax-number-slider');
-            const output = document.getElementById('fax-number-output');
+            if (document.getElementById('gradient-canvas')) {
+                const canvas = document.getElementById('gradient-canvas');
+                const ctx = canvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+                gradient.addColorStop(0, "red");
+                gradient.addColorStop(0.17, "orange");
+                gradient.addColorStop(0.33, "yellow");
+                gradient.addColorStop(0.5, "green");
+                gradient.addColorStop(0.67, "blue");
+                gradient.addColorStop(0.83, "indigo");
+                gradient.addColorStop(1, "violet");
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (slider && output) {
-                slider.addEventListener('input', function () {
-                    let value = this.value.padStart(10, '0');
-                    output.textContent = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+                const colorParts = ['area-code-color', 'second-part-color', 'third-part-color'];
+                let currentPart = 0;
+                canvas.addEventListener('click', function (event) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
+                    const imageData = ctx.getImageData(x, y, 1, 1).data;
+                    const color = `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`;
+                    document.getElementById(colorParts[currentPart]).style.backgroundColor = color;
+                    document.body.style.backgroundColor = color;
+                    currentPart = (currentPart + 1) % 3;
+                    updateGradientFaxNumber();
                 });
 
-                // Initialize the output with the default slider value
-                slider.dispatchEvent(new Event('input'));
+                function updateGradientFaxNumber() {
+                    fax_number = colorParts.map(id => {
+                        const rgb = document.getElementById(id).style.backgroundColor.match(/\d+/g);
+                        return rgb ? rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('').slice(0, 3) : '000';
+                    }).join('');
+                    document.getElementById('gradient-fax-number').textContent = `Fax number: ${fax_number.slice(0, 3)}-${fax_number.slice(3, 6)}-${fax_number.slice(6)}`;
+                }
             }
         }
 
@@ -419,3 +471,5 @@
     <br><br><br><br>
     &lt;/body&gt;
 </body>
+
+</html>
