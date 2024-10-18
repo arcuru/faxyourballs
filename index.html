@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaxYourBalls.com - Send Your Balls via Fax!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+        body {
+            background-color: yellow;
+            font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: red;
+            text-shadow: 2px 2px blue;
+        }
+
+        #ball-images img {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border: 5px solid lime;
+            animation: spin 5s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #fax-form {
+            background-color: #ff00ff;
+            padding: 20px;
+            border: 3px dashed #00ffff;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        input,
+        button {
+            margin: 10px 0;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #00ff00;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        #result-message {
+            font-size: 24px;
+            color: #00ff00;
+            background-color: #000000;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>
+        <marquee>Welcome to FaxYourBalls.com!</marquee>
+    </h1>
+
+    <div id="ball-images">
+        <!-- We'll add ball images here -->
+    </div>
+
+    <form id="fax-form">
+        <label for="ball-input">Enter a URL or upload an image of your balls:</label>
+        <input type="text" id="ball-input" name="ball-input" placeholder="Enter URL">
+        <input type="file" id="ball-upload" name="ball-upload" accept="image/*" style="display: none;">
+        <button type="button" onclick="document.getElementById('ball-upload').click()">Upload Balls</button><br><br>
+
+
+        <div id="phone-input-container">
+            <label for="fax-number">Enter fax number:</label>
+            <input type="tel" id="fax-number" name="fax-number" pattern="[0-9]{10}"><br>
+            <div id="fax-number-error" style="color: red;"></div><br>
+        </div>
+        <a href="#" id="change-input-method">Having trouble? Try another way!</a><br>
+        <br>
+        <button type="submit">Send Your Balls!</button>
+    </form>
+    <div><a href="https://github.com/arcuru/faxyourballs">No Balls? Fax Me A Complaint!</a></div>
+
+    <div id="spinner" class="spinner"></div>
+    <div id="result-message" style="display: none;">
+        <h2>Sent!</h2>
+    </div>
+    <script>
+        var fax_number = '';
+
+        // Handle the "Send Your Balls!" button click
+        document.getElementById('fax-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (document.getElementById('fax-number')) {
+                return;
+            }
+
+            // Show spinner
+            document.getElementById('spinner').style.display = 'block';
+
+            // Simulate processing time
+            setTimeout(function () {
+                // Hide spinner
+                document.getElementById('spinner').style.display = 'none';
+
+                // Show result message based on fax number
+                var resultMessage = document.getElementById('result-message');
+                if (fax_number === '1234567890') {
+                    resultMessage.innerHTML = '<h2>Wow, nice balls!</h2>';
+                } else if (fax_number.substring(3, 6) === '555') {
+                    // 555 is a fake number used in all the movies
+                    resultMessage.innerHTML = '<h2>Your balls have been faxed to Hollywood!</h2>';
+                } else {
+                    resultMessage.innerHTML = '<h2>Your balls have been successfully faxed!</h2>';
+                }
+                resultMessage.style.display = 'block';
+                document.getElementById('fax-form').reset();
+            }, 1500);
+        });
+        // Add blinking effect to the h1
+        setInterval(function () {
+            var h1 = document.querySelector('h1');
+            h1.style.visibility = (h1.style.visibility === 'hidden' ? 'visible' : 'hidden');
+        }, 500);
+
+        // Add the new ball images
+        var ballImages = ['images/large_scrotum.png', 'images/large_tennis.png', 'images/large_basketball.png', 'images/large_soccer.jpg'];
+        var ballContainer = document.getElementById('ball-images');
+
+        ballImages.forEach(function (image) {
+            var img = document.createElement('img');
+            img.src = image;
+            img.alt = 'Spinning ' + image.split('/').pop().split('.')[0];
+            ballContainer.appendChild(img);
+        });
+
+        // Handle the "Upload Balls" button click
+        document.getElementById('ball-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                addSpinningBall(URL.createObjectURL(file));
+            }
+        });
+
+        document.querySelector('button[onclick="document.getElementById(\'ball-upload\').click()"]').addEventListener('click', function () {
+            const urlInput = document.getElementById('ball-input');
+            if (urlInput.value) {
+                addSpinningBall(urlInput.value);
+            } else {
+                document.getElementById('ball-upload').click();
+            }
+        });
+
+        function addSpinningBall(src) {
+            // Create a new image element for the uploaded file or URL
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = 'Uploaded ball';
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.position = 'fixed';
+            img.style.zIndex = '-1';
+            img.style.animation = 'spin 5s linear infinite';
+
+            // Set random position
+            img.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            img.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+
+            // Add the new image to the body
+            document.body.appendChild(img);
+        }
+
+
+        // Phone input method switching
+        var currentInputMethod = 0;
+        var inputMethods = [
+            function () {
+                return '<label for="fax-number">Enter fax number:</label>' +
+                    '<input type="tel" id="fax-number" name="fax-number" pattern="[0-9]{10}">' +
+                    '<div id="fax-number-error" style="color: red;"></div>';
+            },
+            function () {
+                var options = Array.from({ length: 1000 }, (_, i) => i.toString().padStart(3, '0'));
+                var lastOptions = Array.from({ length: 10000 }, (_, i) => i.toString().padStart(4, '0'));
+
+                return '<label>Select fax number:</label><br>' +
+                    '<select id="area-code" name="area-code">' +
+                    options.map(opt => `<option value="${opt}">${opt}</option>`).join('') +
+                    '</select> - ' +
+                    '<select id="second-part" name="second-part">' +
+                    options.map(opt => `<option value="${opt}">${opt}</option>`).join('') +
+                    '</select> - ' +
+                    '<select id="third-part" name="third-part">' +
+                    lastOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('') +
+                    '</select>';
+            },
+            function () {
+                return '<label for="fax-number-slider">Slide to select your fax number:</label><br><br>' +
+                    '<output id="fax-number-output"></output><br>' +
+                    '<input type="range" id="fax-number-slider" name="fax-number-slider" min="0" max="9999999999" step="1"><br>';
+            },
+            function () {
+                var boxes = [
+                    '(<input type="text" id="digit-0" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-1" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-2" readonly style="width: 20px; text-align: center;">) ',
+                    '<input type="text" id="digit-3" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-4" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-5" readonly style="width: 20px; text-align: center;">',
+                    '-',
+                    '<input type="text" id="digit-6" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-7" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-8" readonly style="width: 20px; text-align: center;">',
+                    '<input type="text" id="digit-9" readonly style="width: 20px; text-align: center;">'
+                ].join('');
+                return `<label>Please enter your phone number:</label><br>
+                        <div id="digit-boxes" style="display: inline-block;">${boxes}</div><br>
+                        <button id="start-btn" type="button">Start</button>
+                        <button id="restart-btn" type="button">Restart</button>`;
+            }
+        ];
+        document.getElementById('change-input-method').addEventListener('click', function (event) {
+            event.preventDefault();
+            currentInputMethod = (currentInputMethod + 1) % inputMethods.length;
+            document.getElementById('phone-input-container').innerHTML = inputMethods[currentInputMethod]();
+            setupFaxNumberListeners();
+        });
+
+        // Setup callbacks to save thee entered fax number
+        function setupNumberStorage() {
+            if (document.getElementById('fax-number')) {
+                document.getElementById('fax-number').addEventListener('input', function () {
+                    fax_number = this.value;
+                });
+            }
+            if (document.getElementById('area-code') && document.getElementById('second-part') && document.getElementById('third-part')) {
+                ['area-code', 'second-part', 'third-part'].forEach(function (id) {
+                    document.getElementById(id).addEventListener('change', function () {
+                        fax_number = document.getElementById('area-code').value +
+                            document.getElementById('second-part').value +
+                            document.getElementById('third-part').value;
+                    });
+                });
+            }
+            if (document.getElementById('fax-number-slider')) {
+                document.getElementById('fax-number-slider').addEventListener('input', function () {
+                    fax_number = this.value.padStart(10, '0');
+                });
+            }
+            if (document.getElementById('digit-boxes')) {
+                for (let i = 0; i < 10; i++) {
+                    document.getElementById(`digit-${i}`).addEventListener('change', function () {
+                        fax_number = Array.from({ length: 10 }, (_, i) => document.getElementById(`digit-${i}`).value).join('');
+                    });
+                }
+            }
+        }
+
+        function setupFaxNumberListeners() {
+            setupNumberStorage();
+            if (document.getElementById('fax-number')) {
+                var faxInput = document.getElementById('fax-number');
+                var errorDiv = document.getElementById('fax-number-error');
+
+                faxInput.addEventListener('input', function () {
+                    if (document.activeElement !== this) {
+                        if (this.value.match(/.*/)) {
+                            errorDiv.textContent = "Incorrect format, please try again.";
+                        } else {
+                            errorDiv.textContent = "";
+                        }
+                    }
+                });
+
+                faxInput.addEventListener('focus', function () {
+                    errorDiv.textContent = "";
+                });
+
+                faxInput.addEventListener('blur', function () {
+                    if (this.value.match(/.*/)) {
+                        errorDiv.textContent = "Incorrect format, please try again.";
+                    }
+                });
+            }
+            if (document.getElementById('fax-number-slider')) {
+                updateSliderOutput();
+            }
+            if (document.getElementById('start-btn')) {
+                let currentBox = 0;
+                let interval = null;
+
+                function restartSelection() {
+                    if (interval) {
+                        clearInterval(interval);
+                        interval = null;
+                    }
+                    currentBox = 0;
+                    for (let i = 0; i < 10; i++) {
+                        document.getElementById(`digit-${i}`).value = '';
+                    }
+                }
+
+                document.getElementById('start-btn').addEventListener('click', function () {
+                    if (currentBox < 10) {
+                        if (interval) {
+                            clearInterval(interval);
+                            interval = null;
+                            currentBox++;
+                        }
+                        if (currentBox < 10) {
+                            let currentDigit = 0;
+                            document.getElementById(`digit-${currentBox}`).value = currentDigit;
+                            currentDigit = (currentDigit + 1) % 10;
+                            interval = setInterval(() => {
+                                document.getElementById(`digit-${currentBox}`).value = currentDigit;
+                                currentDigit = (currentDigit + 1) % 10;
+                            }, 100 * (2 ** currentBox));
+                        }
+                    }
+                });
+
+                document.getElementById('restart-btn').addEventListener('click', restartSelection);
+
+                // Initial setup
+                restartSelection();
+            }
+        }
+
+        function updateSliderOutput() {
+            const slider = document.getElementById('fax-number-slider');
+            const output = document.getElementById('fax-number-output');
+
+            if (slider && output) {
+                slider.addEventListener('input', function () {
+                    let value = this.value.padStart(10, '0');
+                    output.textContent = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+                });
+
+                // Initialize the output with the default slider value
+                slider.dispatchEvent(new Event('input'));
+            }
+        }
+
+        setupFaxNumberListeners();
+    </script>
+</body>
+</body>
+
+</html>
