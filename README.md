@@ -6,7 +6,7 @@
 
 ### WTF is this?
 
-Recently I was re-watching [My Boys (2006)](https://en.wikipedia.org/wiki/My_Boys). A great casual sitcom.
+Recently I was re-watching [My Boys (2006)](https://www.themoviedb.org/tv/3965-my-boys). A great casual sitcom.
 
 In episode 4x06, Hanger Management, Mike says he's claimed a lot of domain names and is willing to sell them to his friend Kenny. Among them he lists FaxYourBalls.com
 
